@@ -1,0 +1,106 @@
+fileFormatVersion: 2
+guid: dd9ca3a9214eea849a21d2a250a40b4b
+timeCreated: 1461173178
+licenseType: Store
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: menuBackground_0
+    21300002: menuBackground_1
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 512
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 13, y: 13, z: 14, w: 15}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: menuBackground_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 449
+        width: 423
+        height: 142
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 17, y: 18, z: 21, w: 21}
+      outline:
+      - - {x: 181.94667, y: 55.146667}
+        - {x: 177.94667, y: 58.146667}
+        - {x: 174.94667, y: 60.146667}
+        - {x: -171.05333, y: 60.146667}
+        - {x: -178.05333, y: 54.146667}
+        - {x: -178.05333, y: 53.146667}
+        - {x: -180.05333, y: 51.146667}
+        - {x: -180.05333, y: -51.853333}
+        - {x: -177.05333, y: -55.853333}
+        - {x: -177.05333, y: -56.853333}
+        - {x: -175.05333, y: -59.853333}
+        - {x: -172.05333, y: -60.853333}
+        - {x: 176.94667, y: -60.853333}
+        - {x: 181.94667, y: -55.853333}
+    - name: menuBackground_1
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 17
+        width: 423
+        height: 424
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 20, y: 19, z: 18, w: 22}
+      outline:
+      - - {x: 176.94667, y: 182.00667}
+        - {x: -172.05333, y: 182.00667}
+        - {x: -178.05333, y: 178.00667}
+        - {x: -180.05333, y: 173.00667}
+        - {x: -180.05333, y: -171.99333}
+        - {x: -178.05333, y: -176.99333}
+        - {x: -174.05333, y: -179.99333}
+        - {x: -173.05333, y: -180.99333}
+        - {x: 175.94667, y: -180.99333}
+        - {x: 181.94667, y: -176.99333}
+        - {x: 181.94667, y: 176.00667}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
