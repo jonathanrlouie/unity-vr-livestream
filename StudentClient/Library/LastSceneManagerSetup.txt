@@ -1,1 +1,4 @@
-sceneSetups: []
+sceneSetups:
+- path: Assets/ServerClient_Setup/Scenes/MainMenu.unity
+  isLoaded: 1
+  isActive: 1
