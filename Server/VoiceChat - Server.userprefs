@@ -1,0 +1,16 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/StartScript.cs">
+    <Files>
+      <File FileName="Assets/VoiceChat/Scripts/Demo/HLAPI/VoiceChatNetworkManager.cs" Line="4" Column="1" />
+      <File FileName="Assets/VoiceChat/Scripts/Networking/VoiceChatNetworkProxy.cs" Line="107" Column="7" />
+      <File FileName="Assets/VoiceChat/Scripts/Demo/VoiceChatUi.cs" Line="1" Column="1" />
+      <File FileName="Assets/VoiceChat/Scripts/Demo/VoiceChatServerUi.cs" Line="13" Column="76" />
+      <File FileName="Assets/StartScript.cs" Line="9" Column="8" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
