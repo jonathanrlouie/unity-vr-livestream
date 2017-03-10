@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/ServerClient_Setup/Scenes/MainMenu.unity
+- path: Assets/VoiceChat/Scene/Networking [HLAPI].unity
   isLoaded: 1
   isActive: 1

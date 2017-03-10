@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{0093A431-2A05-2CE6-A67C-25F557FBCFA6}</ProjectGuid>
+    <ProjectGuid>{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -46,38 +46,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\DFVoice\Scripts\Codec\IAudioCodec.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Codec\SpeexCodec.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Components\TestLocalVoiceController.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Components\UnityNetworkVoiceController.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Components\VoiceControllerBase.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\IO\AudioClipInputDevice.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\IO\AudioInputDeviceBase.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\IO\IAudioPlayer.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\IO\MicrophoneInputDevice.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\IO\UnityAudioPlayer.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Misc\VoicePacketWrapper.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\AudioUtils.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\BigArray.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\ChunkBuffer.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\FastList.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\TempArray.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\VoiceControllerCollection.cs" />
-     <Compile Include="Assets\DFVoice\Scripts\Utils\VoiceControllerKeyedCollection.cs" />
-     <Compile Include="Assets\DFVoice\Splash\Scripts\SplashScreen.cs" />
-     <Compile Include="Assets\Scripts\MicrophoneListener.cs" />
-     <Compile Include="Assets\ServerClient_Setup\Scripts\ClientHUD.cs" />
-     <Compile Include="Assets\ServerClient_Setup\Scripts\CustomNetworkManager.cs" />
-     <Compile Include="Assets\ServerClient_Setup\Scripts\Example\Mesages.cs" />
-     <Compile Include="Assets\ServerClient_Setup\Scripts\MainMenu.cs" />
-     <Compile Include="Assets\ServerClient_Setup\Scripts\ServerHUD.cs" />
-     <None Include="Assets\DFVoice\Plugins\OpusLicense.txt" />
-     <None Include="Assets\DFVoice\README.txt" />
-     <None Include="Assets\DFVoice\Plugins\NSpeexLicense.txt" />
-     <None Include="Assets\ServerClient_Setup\README!!.txt" />
- <Reference Include="UnityEngine.Purchasing">
- <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityPurchasing/UnityEngine.Purchasing.dll</HintPath>
- </Reference>
+     <Compile Include="Assets\StartScript.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Demo\HLAPI\VoiceChatNetworkManager.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Demo\LegacyNetworking\VoiceChatPickUi.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Demo\LegacyNetworking\VoiceChatUnityClient.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Demo\LegacyNetworking\VoiceChatUnityServer.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Demo\VoiceChatServerUi.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Demo\VoiceChatUi.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Libs\Exocortex.DSP.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Libs\NAudio.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Networking\Legacy\VoiceChatExtensions.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Networking\Legacy\VoiceChatNetworkProxy.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Networking\Legacy\VoiceChatNetworkUtils.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatMsgType.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatNetworkProxy.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatPacketMessage.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatCircularBuffer.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatCompression.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatPacket.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatPlayer.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatPool.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatPreset.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatRecorder.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatSettings.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatUtils.cs" />
+     <None Include="Assets\VoiceChat\Assemblies\NSpeex.Agreement.txt" />
+     <None Include="Assets\VoiceChat\Assemblies\Ionic.Zlib.Agreement.txt" />
  <Reference Include="UnityEngine.Analytics">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
@@ -90,17 +84,17 @@
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.VR">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
+ <Reference Include="Ionic.Zlib">
+ <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
+ </Reference>
  <Reference Include="NSpeex">
- <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/StudentClient/Assets/DFVoice/Plugins/NSpeex.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

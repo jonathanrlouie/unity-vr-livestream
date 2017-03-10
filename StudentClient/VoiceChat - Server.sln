@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{3CE9560F-1895-BD23-A325-2FEDE0FACD24}") = "VoiceChat - Server", "Assembly-CSharp.csproj", "{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}"
+EndProject
+Project("{3CE9560F-1895-BD23-A325-2FEDE0FACD24}") = "VoiceChat - Server", "Assembly-CSharp-Editor.csproj", "{69BFE369-39B5-2CBC-B21C-96084965ABAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69BFE369-39B5-2CBC-B21C-96084965ABAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69BFE369-39B5-2CBC-B21C-96084965ABAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69BFE369-39B5-2CBC-B21C-96084965ABAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69BFE369-39B5-2CBC-B21C-96084965ABAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
