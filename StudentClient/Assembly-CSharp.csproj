@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}</ProjectGuid>
+    <ProjectGuid>{0093A431-2A05-2CE6-A67C-25F557FBCFA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\StartScript.cs" />
+     <Compile Include="Assets\VoiceChat\Scripts\ConnectionManager.cs" />
      <Compile Include="Assets\VoiceChat\Scripts\Demo\HLAPI\VoiceChatNetworkManager.cs" />
      <Compile Include="Assets\VoiceChat\Scripts\Demo\LegacyNetworking\VoiceChatPickUi.cs" />
      <Compile Include="Assets\VoiceChat\Scripts\Demo\LegacyNetworking\VoiceChatUnityClient.cs" />
@@ -91,10 +92,10 @@
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
  <Reference Include="Ionic.Zlib">
- <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/StudentClient/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
  </Reference>
  <Reference Include="NSpeex">
- <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/StudentClient/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

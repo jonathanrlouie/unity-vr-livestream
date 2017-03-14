@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/VoiceChat/Scene/Networking [HLAPI].unity
+- path: Assets/VoiceChat/Scene/StudentScene.unity
   isLoaded: 1
   isActive: 1

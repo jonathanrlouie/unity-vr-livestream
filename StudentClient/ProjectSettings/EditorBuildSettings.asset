@@ -9,3 +9,7 @@ EditorBuildSettings:
     path: Assets/VoiceChat/Scene/Networking [HLAPI].unity
   - enabled: 1
     path: Assets/VoiceChat/Scene/LegacyNetworking.unity
+  - enabled: 1
+    path: Assets/VoiceChat/Scene/StudetScene.unity
+  - enabled: 1
+    path: Assets/VoiceChat/Scene/StudentClient.unity
