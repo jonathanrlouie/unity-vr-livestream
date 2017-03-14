@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/VoiceChat/Scene/StudentScene.unity
+- path: Assets/VoiceChat/Scene/StudentClient.unity
   isLoaded: 1
   isActive: 1
