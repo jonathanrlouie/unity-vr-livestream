@@ -14,7 +14,7 @@ namespace VoiceChat.Demo.LegacyNetworking
         {
             GUI.Box(new Rect(0, 0, 100, 100), "");
 
-            if (GUILayout.Button("Start Server"))
+            if (GUILayout.Button("StarServer"))
             {
                 gameObject.GetComponent<VoiceChatUnityServer>().enabled = true;
                 gameObject.AddComponent<VoiceChatServerUi>();

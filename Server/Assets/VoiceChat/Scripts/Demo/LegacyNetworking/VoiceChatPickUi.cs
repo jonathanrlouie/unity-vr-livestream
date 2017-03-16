@@ -13,14 +13,14 @@ namespace VoiceChat.Demo.LegacyNetworking
         void Window(int id)
         {
             GUI.Box(new Rect(0, 0, 100, 100), "");
-
+            
             if (GUILayout.Button("Start Server"))
             {
                 gameObject.GetComponent<VoiceChatUnityServer>().enabled = true;
                 gameObject.AddComponent<VoiceChatServerUi>();
                 MonoBehaviour.Destroy(this);
             }
-
+            
             if (GUILayout.Button("Start Client"))
             {
                 gameObject.GetComponent<VoiceChatUnityClient>().enabled = true;
