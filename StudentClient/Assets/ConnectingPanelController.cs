@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using VoiceChat;
 
 public class ConnectingPanelController : MonoBehaviour {
 
@@ -18,6 +19,8 @@ public class ConnectingPanelController : MonoBehaviour {
         bool noConnection = (mng.client == null || mng.client.connection == null ||
                                  mng.client.connection.connectionId == -1);
         if (mng.IsClientConnected()) {
+            Application.RequestUserAuthorization(UserAuthorization.Microphone);
+            VoiceChatRecorder.Instance.StartRecording();
             fsm.StateTrans(FSM.State.Connected);
         } else if (!mng.IsClientConnected() && noConnection) {
             fsm.StateTrans(FSM.State.Unconnected);

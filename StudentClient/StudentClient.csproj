@@ -87,6 +87,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CallTutorButtonController.cs" />
     <Compile Include="Assets\ConnectButtonController.cs" />
     <Compile Include="Assets\ConnectingPanelController.cs" />
     <Compile Include="Assets\DisconnectButtonController.cs" />
