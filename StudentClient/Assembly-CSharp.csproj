@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}</ProjectGuid>
+    <ProjectGuid>{0093A431-2A05-2CE6-A67C-25F557FBCFA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -46,6 +46,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CallTutorButtonController.cs" />
+     <Compile Include="Assets\ConnectButtonController.cs" />
+     <Compile Include="Assets\ConnectingPanelController.cs" />
+     <Compile Include="Assets\DisconnectButtonController.cs" />
+     <Compile Include="Assets\FSM.cs" />
      <Compile Include="Assets\StartScript.cs" />
      <Compile Include="Assets\VoiceChat\Scripts\Demo\HLAPI\VoiceChatNetworkManager.cs" />
      <Compile Include="Assets\VoiceChat\Scripts\Demo\LegacyNetworking\VoiceChatPickUi.cs" />
@@ -72,6 +77,9 @@
      <Compile Include="Assets\VoiceChat\Scripts\VoiceChatUtils.cs" />
      <None Include="Assets\VoiceChat\Assemblies\NSpeex.Agreement.txt" />
      <None Include="Assets\VoiceChat\Assemblies\Ionic.Zlib.Agreement.txt" />
+ <Reference Include="UnityEngine.Purchasing">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityPurchasing/UnityEngine.Purchasing.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.Analytics">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
@@ -84,6 +92,9 @@
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
@@ -91,10 +102,10 @@
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
  <Reference Include="Ionic.Zlib">
- <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/StudentClient/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
  </Reference>
  <Reference Include="NSpeex">
- <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/StudentClient/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
