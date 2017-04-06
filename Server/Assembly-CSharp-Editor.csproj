@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{69BFE369-39B5-2CBC-B21C-96084965ABAA}</ProjectGuid>
+    <ProjectGuid>{387AC22C-C658-80AB-9C98-F8AC5082FD64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
@@ -99,10 +99,10 @@
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
  <Reference Include="Ionic.Zlib">
- <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/Server/Assets/VoiceChat/Assemblies/Ionic.Zlib.dll</HintPath>
  </Reference>
  <Reference Include="NSpeex">
- <HintPath>/Users/sallyp/Downloads/VoiceChat - Server/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
+ <HintPath>/Users/sallyp/Downloads/codes/unity-vr-livestream/Server/Assets/VoiceChat/Assemblies/NSpeex.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -122,7 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{D35F94F9-9864-2BE0-3F94-1AD03EAA6CF5}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{4F4579B2-A4D7-3DB0-79A1-9E3D45589605}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
-namespace VoiceChat.Networking
-{
-    public class VoiceChatNetworkProxy : NetworkBehaviour
-    {
+using System.Net;
+using System.Net.Sockets;
+
+namespace VoiceChat.Networking {
+    public class VoiceChatNetworkProxy : NetworkBehaviour{
         public delegate void MessageHandler<T>(T data);
         public static event MessageHandler<VoiceChatPacketMessage> VoiceChatPacketReceived;
         public static event System.Action<VoiceChatNetworkProxy> ProxyStarted;
@@ -19,13 +20,21 @@ namespace VoiceChat.Networking
         //public bool isMine { get { return networkId != 0 && networkId == localProxyId; } }
         public bool isMine { get { return networkId == localProxyId; } }
 
+		// roles password to roles
+		private Dictionary<string, string> accounts = new Dictionary<string, string>();
+		private Dictionary<string, string> ipToRole = new Dictionary<string, string> ();
+
+		private string clientIPAddress;
+		private string clientPassword;
+		private string clientRole;
+
         [SyncVar]
         private int networkId;
 
         VoiceChatPlayer player = null;
 
-        void Start()
-        {
+        void Start() {
+			clientIPAddress = GetClientIPAddress ();
             if (isMine)
             {
                 if (LogFilter.logDebug)
@@ -251,5 +260,45 @@ namespace VoiceChat.Networking
         }
         
         #endregion
+	
+
+		#region IP, Pw, and Role
+
+		// get client ip address
+		public string GetClientIPAddress() {
+
+			IPHostEntry Host = default(IPHostEntry);
+			string Hostname = null;
+			Hostname = System.Environment.MachineName;
+			Host = Dns.GetHostEntry(Hostname);
+			foreach (IPAddress IP in Host.AddressList) {
+				if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
+					clientIPAddress = Host.AddressList [0].ToString ();
+				}
+			}
+			return clientIPAddress;
+		}
+		// get client password and get the role
+		public string matchPasswordToRole() {
+			if (accounts.ContainsKey (clientPassword)) {
+				clientRole = accounts [clientPassword];
+			} else {
+				accounts.Add (clientPassword, "student");
+			}
+			return clientRole;
+		}
+		// have password and role, and assign ip to role
+		public void assignIpToRole() {
+			// ["127.445.435.900", "student"]
+			if (ipToRole.ContainsKey (clientIPAddress)) {
+				clientRole = ipToRole [clientIPAddress];
+			} else {
+				ipToRole.Add (clientIPAddress, clientRole);
+			}
+		}
+
+		#endregion
     }
+
+
 }
