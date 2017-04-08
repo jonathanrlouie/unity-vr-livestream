@@ -99,7 +99,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 49342780}
-  - component: {fileID: 49342781}
   m_Layer: 0
   m_Name: ConnectedPanel
   m_TagString: VRLivestreamPanel
@@ -122,17 +121,6 @@ Transform:
   m_Father: {fileID: 1889948712}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &49342781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 49342779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41e538b939bfb82479a98b27513f43a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &300099932
 GameObject:
   m_ObjectHideFlags: 0

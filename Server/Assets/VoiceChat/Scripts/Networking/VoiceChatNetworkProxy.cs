@@ -21,12 +21,13 @@ namespace VoiceChat.Networking {
         public bool isMine { get { return networkId == localProxyId; } }
 
 		// roles password to roles
-		private Dictionary<string, string> accounts = new Dictionary<string, string>();
-		private Dictionary<string, string> ipToRole = new Dictionary<string, string> ();
-
-		private string clientIPAddress;
-		private string clientPassword;
-		private string clientRole;
+        // TODO: Get a real database for authentication instead of using this hardcoded map 
+		private static Dictionary<string, string> accounts = new Dictionary<string, string>() {
+            { "matt", "tutor" },
+            { "sally", "tutor" },
+            { "jonathan1337", "tutor" }
+        };
+		private static Dictionary<int, string> proxyIdToRole = new Dictionary<int, string> ();
 
         [SyncVar]
         private int networkId;
@@ -34,7 +35,6 @@ namespace VoiceChat.Networking {
         VoiceChatPlayer player = null;
 
         void Start() {
-			clientIPAddress = GetClientIPAddress ();
             if (isMine)
             {
                 if (LogFilter.logDebug)
@@ -159,8 +159,17 @@ namespace VoiceChat.Networking {
             proxies.Remove(id);
         }
 
-        public static void OnManagerStartServer()
+        public static void OnManagerStartServer(GameObject customPrefab = null)
         {
+            if (customPrefab == null)
+            {
+                proxyPrefab = Resources.Load<GameObject>(ProxyPrefabPath);
+            }
+            else
+            {
+                proxyPrefab = customPrefab;
+            }
+
             NetworkServer.RegisterHandler(VoiceChatMsgType.Packet, OnServerPacketReceived);
             NetworkServer.RegisterHandler(VoiceChatMsgType.RequestProxy, OnProxyRequested);
         }
@@ -176,13 +185,42 @@ namespace VoiceChat.Networking {
             var client = NetworkManager.singleton.client;
             client.Send(VoiceChatMsgType.RequestProxy, new EmptyMessage());
         }
-        
+
         #endregion
+
+        private static bool AuthPassword(string password, int proxyId)
+        {
+            // TODO: this is horribly insecure! Make sure that passwords are at least hashed first.
+            string role = LookupRole(password);
+            AssignProxyToRole(proxyId, role);
+
+            // TODO: use a real authentication workflow that returns false if the client isn't registered in the database
+            return true;
+        }
+
+        // get client password and get the role
+        public static string LookupRole(string password)
+        {
+            string clientRole = "student";
+            if (accounts.ContainsKey(password))
+            {
+                clientRole = accounts[password];
+            }
+            return clientRole;
+        }
+
+        // have password and role, and assign ip to role
+        public static void AssignProxyToRole(int proxyId, string role)
+        {
+            proxyIdToRole.Add(proxyId, role);
+        }
 
         #region Network Message Handlers
 
         private static void OnProxyRequested(NetworkMessage netMsg)
         {
+            string password = netMsg.ReadMessage<StringMessage>().value;
+
             var id = netMsg.conn.connectionId;
 
             if (LogFilter.logDebug)
@@ -190,31 +228,34 @@ namespace VoiceChat.Networking {
                 Debug.Log("Proxy Requested by " + id);
             }
 
-            // We need to set the "localProxyId" static variable on the client
-            // before the "Start" method of the local proxy is called.
-            // On Local Clients, the Start method of a spowned obect is faster than
-            // Connection.Send() so we will set the "localProxyId" flag ourselves
-            // since we are in the same instance of the game.
-            if (id == -1)
+            if (AuthPassword(password, id))
             {
-                if (LogFilter.logDebug)
+                print(proxyIdToRole[id]);
+                // We need to set the "localProxyId" static variable on the client
+                // before the "Start" method of the local proxy is called.
+                // On Local Clients, the Start method of a spowned obect is faster than
+                // Connection.Send() so we will set the "localProxyId" flag ourselves
+                // since we are in the same instance of the game.
+                if (id == -1)
                 {
-                    Debug.Log("Local proxy! Setting local proxy id by hand");
+                    if (LogFilter.logDebug)
+                    {
+                        Debug.Log("Local proxy! Setting local proxy id by hand");
+                    }
+
+                    VoiceChatNetworkProxy.localProxyId = id;
+                }
+                else
+                {
+                    netMsg.conn.Send(VoiceChatMsgType.SpawnProxy, new IntegerMessage(id));
                 }
 
-                VoiceChatNetworkProxy.localProxyId = id;
+                var proxy = Instantiate<GameObject>(proxyPrefab);
+                proxy.SendMessage("SetNetworkId", id);
+
+                proxies.Add(id, proxy);
+                NetworkServer.Spawn(proxy);
             }
-            else
-            {
-                netMsg.conn.Send(VoiceChatMsgType.SpawnProxy, new IntegerMessage(id));
-            }
-
-            var proxy = Instantiate<GameObject>(proxyPrefab);
-            proxy.SendMessage("SetNetworkId", id);
-
-            proxies.Add(id, proxy);
-            NetworkServer.Spawn(proxy);
-
         }
 
         private static void OnProxySpawned(NetworkMessage netMsg)
@@ -261,43 +302,8 @@ namespace VoiceChat.Networking {
         
         #endregion
 	
-
-		#region IP, Pw, and Role
-
-		// get client ip address
-		public string GetClientIPAddress() {
-
-			IPHostEntry Host = default(IPHostEntry);
-			string Hostname = null;
-			Hostname = System.Environment.MachineName;
-			Host = Dns.GetHostEntry(Hostname);
-			foreach (IPAddress IP in Host.AddressList) {
-				if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
-					clientIPAddress = Host.AddressList [0].ToString ();
-				}
-			}
-			return clientIPAddress;
-		}
-		// get client password and get the role
-		public string matchPasswordToRole() {
-			if (accounts.ContainsKey (clientPassword)) {
-				clientRole = accounts [clientPassword];
-			} else {
-				accounts.Add (clientPassword, "student");
-			}
-			return clientRole;
-		}
-		// have password and role, and assign ip to role
-		public void assignIpToRole() {
-			// ["127.445.435.900", "student"]
-			if (ipToRole.ContainsKey (clientIPAddress)) {
-				clientRole = ipToRole [clientIPAddress];
-			} else {
-				ipToRole.Add (clientIPAddress, clientRole);
-			}
-		}
-
-		#endregion
+        
+        
     }
 
 
