@@ -9,7 +9,8 @@ public class StartScript : MonoBehaviour {
 	public NetworkManager mng;
 	// Use this for initialization
 	void Start () {
-        mng.StartClient();
+
+		mng.StartHost();
 	}
 	
 	// Update is called once per frame

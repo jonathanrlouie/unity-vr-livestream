@@ -6,25 +6,27 @@ using VoiceChat.Networking;
 
 namespace VoiceChat.Demo.HLAPI
 {
+    
+
     public class VoiceChatNetworkManager : NetworkManager
     {
-		void Start(){
+        public FSM fsm;
+
+        void Start(){
 			
 		}
 
         public override void OnStartClient(NetworkClient client)
         {
             VoiceChatNetworkProxy.OnManagerStartClient(client);
-
-            gameObject.AddComponent<VoiceChatUi>();
         }
 
         public override void OnStopClient()
         {
             VoiceChatNetworkProxy.OnManagerStopClient();
-
-            if (client != null)
-                Destroy(GetComponent<VoiceChatUi>());
+            VoiceChatRecorder.Instance.AutoDetectSpeech = false;
+            VoiceChatRecorder.Instance.StopRecording();
+            fsm.StateTrans(FSM.State.Unconnected);
         }
 
         public override void OnServerDisconnect(NetworkConnection conn)

@@ -2,26 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class ConnectButtonController : MonoBehaviour {
 
     public NetworkManager mng;
-    public InputField ipAddrField;
+    public FSM fsm;
 
-    // Use this for initialization
-    void Start () {
+	// Use this for initialization
+	void Start () {
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        
-    }
+		
+	}
 
-    public void OnClickedButton() {
+    public void OnClick()
+    {
         mng.StartClient();
-        mng.networkAddress = ipAddrField.text.ToString();
+        mng.networkAddress = "localhost";
+        fsm.StateTrans(FSM.State.Connecting);
     }
 }
