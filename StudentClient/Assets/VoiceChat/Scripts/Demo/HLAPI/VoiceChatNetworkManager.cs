@@ -19,6 +19,7 @@ namespace VoiceChat.Demo.HLAPI
         public override void OnStartClient(NetworkClient client)
         {
             VoiceChatNetworkProxy.OnManagerStartClient(client);
+            VoiceChatRecorder.Instance.AutoDetectSpeech = true;
         }
 
         public override void OnStopClient()

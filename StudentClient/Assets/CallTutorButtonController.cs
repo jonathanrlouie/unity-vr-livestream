@@ -1,17 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using VoiceChat;
+using VoiceChat.Networking;
+using UnityEngine.Networking.NetworkSystem;
 
 public class CallTutorButtonController : MonoBehaviour {
-
-    enum ButtonState { StartCall, EndCall };
-
-    ButtonState currentState = ButtonState.StartCall;
-
+    
 	// Use this for initialization
 	void Start () {
         Application.RequestUserAuthorization(UserAuthorization.Microphone);
+        VoiceChatRecorder.Instance.AutoDetectSpeech = true;
     }
 	
 	// Update is called once per frame
@@ -21,26 +21,7 @@ public class CallTutorButtonController : MonoBehaviour {
 
     public void OnClick()
     {
-        switch (currentState)
-        {
-            case ButtonState.StartCall:
-                currentState = ButtonState.EndCall;
-                StartCall();
-                break;
-            case ButtonState.EndCall:
-                currentState = ButtonState.StartCall;
-                EndCall();
-                break;
-        }
+        NetworkManager.singleton.client.Send(VoiceChatMsgType.StudentRequestTutor, new EmptyMessage());
     }
-
-    void StartCall()
-    {
-        VoiceChatRecorder.Instance.AutoDetectSpeech = true;
-    }
-
-    void EndCall()
-    {
-        VoiceChatRecorder.Instance.AutoDetectSpeech = false;
-    }
+    
 }

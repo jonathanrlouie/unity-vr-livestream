@@ -21,7 +21,6 @@ public class ConnectButtonController : MonoBehaviour {
     public void OnClick()
     {
         mng.StartClient();
-        mng.networkAddress = "localhost";
         fsm.StateTrans(FSM.State.Connecting);
     }
 }

@@ -16,6 +16,11 @@ namespace VoiceChat.Networking
         private static int localProxyId;
         private static Dictionary<int, GameObject> proxies = new Dictionary<int, GameObject>();
 
+        public static GameObject callUserButtonPrefab;
+        public static GameObject canvas;
+		private static List<int> helpNeededIds = new List<int>();
+		private static Dictionary<int, GameObject> connectedUsers = new Dictionary<int, GameObject>();
+
         //public bool isMine { get { return networkId != 0 && networkId == localProxyId; } }
         public bool isMine { get { return networkId == localProxyId; } }
 
@@ -39,6 +44,7 @@ namespace VoiceChat.Networking
             else
             {
                 VoiceChatPacketReceived += OnReceivePacket;
+
             }
 
             if (isClient && (!isMine || VoiceChatSettings.Instance.LocalDebug))
@@ -104,13 +110,41 @@ namespace VoiceChat.Networking
             //VoiceChatRecorder.Instance.NetworkId = networkId;
         }
 
-      
+        
+
         #region NetworkManager Hooks
+
+        private static void OnAddUserId(NetworkMessage netMsg)
+        {
+            int newId = netMsg.ReadMessage<IntegerMessage>().value;
+
+            if (!connectedUsers.ContainsKey(newId) && newId != localProxyId)
+            {
+                var button = Instantiate(callUserButtonPrefab, new Vector3(50*localProxyId + 50, 50, 0), Quaternion.identity);
+                button.transform.SetParent(canvas.transform);
+                button.GetComponent<CallUserButtonController>().userId = newId;
+                
+
+                connectedUsers.Add(newId, button);
+            }
+
+        }
+
+        private static void OnRemoveUserId(NetworkMessage netMsg)
+        {
+            int removeId = netMsg.ReadMessage<IntegerMessage>().value;
+            Destroy(connectedUsers[removeId]);
+            connectedUsers.Remove(removeId);
+            
+        }
 
         public static void OnManagerStartClient(NetworkClient client, GameObject customPrefab = null)
         {
             client.RegisterHandler(VoiceChatMsgType.Packet, OnClientPacketReceived);
             client.RegisterHandler(VoiceChatMsgType.SpawnProxy, OnProxySpawned);
+			client.RegisterHandler(VoiceChatMsgType.StudentRequestTutor, OnStudentRequestTutor);
+            client.RegisterHandler(VoiceChatMsgType.AddUser, OnAddUserId);
+            client.RegisterHandler(VoiceChatMsgType.RemoveUser, OnRemoveUserId);
 
 
             if (customPrefab == null)
@@ -130,8 +164,18 @@ namespace VoiceChat.Networking
             var client = NetworkManager.singleton.client;
             if (client == null) return;
 
+            
+            foreach (var entry in connectedUsers)
+            {
+                Destroy(entry.Value);
+            }
+            
+
             client.UnregisterHandler(VoiceChatMsgType.Packet);
             client.UnregisterHandler(VoiceChatMsgType.SpawnProxy);
+			client.UnregisterHandler(VoiceChatMsgType.StudentRequestTutor);
+            client.UnregisterHandler(VoiceChatMsgType.AddUser);
+            client.UnregisterHandler(VoiceChatMsgType.RemoveUser);
         }
 
         public static void OnManagerServerDisconnect(NetworkConnection conn)
@@ -171,6 +215,15 @@ namespace VoiceChat.Networking
         #endregion
 
         #region Network Message Handlers
+		
+		private static void OnStudentRequestTutor(NetworkMessage netMsg)
+		{
+			var studentProxyId = netMsg.ReadMessage<IntegerMessage>().value;
+			
+			if (!helpNeededIds.Contains(studentProxyId)) {
+				helpNeededIds.Add(studentProxyId);
+			}
+		}
 
         private static void OnProxyRequested(NetworkMessage netMsg)
         {

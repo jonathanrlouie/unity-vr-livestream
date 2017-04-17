@@ -165,7 +165,7 @@ namespace VoiceChat.Networking
         public static void OnManagerClientConnect(NetworkConnection connection)
         {
             var client = NetworkManager.singleton.client;
-            client.Send(VoiceChatMsgType.RequestProxy, new StringMessage("jonathan1337"));
+            client.Send(VoiceChatMsgType.RequestProxy, new StringMessage("student"));
         }
         
         #endregion

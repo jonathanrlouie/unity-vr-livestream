@@ -11,14 +11,20 @@ namespace VoiceChat.Demo.HLAPI
     public class VoiceChatNetworkManager : NetworkManager
     {
         public FSM fsm;
+        public GameObject callUserButtonPrefab;
+        public GameObject canvas;
 
         void Start(){
-			
-		}
+            // TODO: is there a better way than setting a static variable?
+            VoiceChatNetworkProxy.callUserButtonPrefab = callUserButtonPrefab;
+            VoiceChatNetworkProxy.canvas = canvas;
+        }
 
         public override void OnStartClient(NetworkClient client)
         {
             VoiceChatNetworkProxy.OnManagerStartClient(client);
+            VoiceChatRecorder.Instance.AutoDetectSpeech = true;
+
         }
 
         public override void OnStopClient()

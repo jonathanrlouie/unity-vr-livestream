@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
+using System.Linq;
 
 using System.Net;
 using System.Net.Sockets;
@@ -27,7 +28,10 @@ namespace VoiceChat.Networking {
             { "sally", "tutor" },
             { "jonathan1337", "tutor" }
         };
-		private static Dictionary<int, string> proxyIdToRole = new Dictionary<int, string> ();
+		private static Dictionary<int, string> proxyIdToRole = new Dictionary<int, string>();
+
+        // maps tutor ids to a list of all student ids that they are currently speaking with
+        private static Dictionary<int, List<int>> currentCallMap = new Dictionary<int, List<int>>();
 
         [SyncVar]
         private int networkId;
@@ -157,6 +161,45 @@ namespace VoiceChat.Networking {
             NetworkServer.Destroy(proxy);
 
             proxies.Remove(id);
+
+            if (proxyIdToRole.ContainsKey(id))
+            {
+                proxyIdToRole.Remove(id);
+            }
+            else
+            {
+                Debug.LogWarning("Attempt to delete proxy " + id + " but was not assigned a role");
+            }
+
+            if (currentCallMap.ContainsKey(id))
+            {
+                currentCallMap.Remove(id);
+            }
+
+            foreach (var entry in currentCallMap)
+            {
+                if (entry.Value.Contains(id))
+                {
+                    entry.Value.Remove(id);
+                }
+            }
+
+            // tell tutors to remove disconnected user from list of connected users
+            foreach (var entry in proxyIdToRole)
+            {
+                if ("tutor".Equals(entry.Value))
+                {
+                    foreach (var connection in NetworkServer.connections)
+                    {
+                        if (connection != null && connection.connectionId == entry.Key)
+                        {
+                            connection.Send(VoiceChatMsgType.RemoveUser, new IntegerMessage(id));
+                        }
+                     
+                    }
+                }
+            }
+
         }
 
         public static void OnManagerStartServer(GameObject customPrefab = null)
@@ -172,6 +215,10 @@ namespace VoiceChat.Networking {
 
             NetworkServer.RegisterHandler(VoiceChatMsgType.Packet, OnServerPacketReceived);
             NetworkServer.RegisterHandler(VoiceChatMsgType.RequestProxy, OnProxyRequested);
+            NetworkServer.RegisterHandler(VoiceChatMsgType.RequestTutor, OnTutorRequested);
+            NetworkServer.RegisterHandler(VoiceChatMsgType.RequestStudent, OnStudentRequested);
+            NetworkServer.RegisterHandler(VoiceChatMsgType.RequestStudentDrop, OnStudentDropRequested);
+            NetworkServer.RegisterHandler(VoiceChatMsgType.EndCall, OnEndCall);
         }
 
         public static void OnManagerStopServer()
@@ -217,6 +264,78 @@ namespace VoiceChat.Networking {
 
         #region Network Message Handlers
 
+        private static void OnStudentRequested(NetworkMessage netMsg)
+        {
+            // TODO: check that proxyIdToRole has the id
+            if ("tutor".Equals(proxyIdToRole[netMsg.conn.connectionId]))
+            {
+                var studentProxyId = netMsg.ReadMessage<IntegerMessage>().value;
+
+                if (currentCallMap.ContainsKey(netMsg.conn.connectionId))
+                {
+                    // only add the student id if it isn't in the call already
+                    if (!currentCallMap[netMsg.conn.connectionId].Contains(studentProxyId))
+                    {
+                        currentCallMap[netMsg.conn.connectionId].Add(studentProxyId);
+                    }
+                }
+                else
+                {
+                    currentCallMap.Add(netMsg.conn.connectionId, new List<int>(studentProxyId));
+                }
+            }
+            
+        }
+
+        private static void OnStudentDropRequested(NetworkMessage netMsg)
+        {
+            // TODO: check that proxyIdToRole has the id
+            if ("tutor".Equals(proxyIdToRole[netMsg.conn.connectionId]))
+            {
+                var studentProxyId = netMsg.ReadMessage<IntegerMessage>().value;
+                
+                // short circuit evaluation yo
+                if (currentCallMap.ContainsKey(netMsg.conn.connectionId) && currentCallMap[netMsg.conn.connectionId].Count > 0)
+                {
+                     currentCallMap[netMsg.conn.connectionId].Remove(studentProxyId);
+                }
+            
+            }
+
+        }
+
+        private static void OnEndCall(NetworkMessage netMsg)
+        {
+
+            print("hello");
+
+            // TODO: check that proxyIdToRole has the id
+            /*if ("tutor".Equals(proxyIdToRole[netMsg.conn.connectionId]))
+            {
+                
+                if (currentCallMap.ContainsKey(netMsg.conn.connectionId))
+                {
+                    currentCallMap.Remove(netMsg.conn.connectionId);
+                }
+
+            }*/
+        }
+
+        private static void OnTutorRequested(NetworkMessage netMsg)
+        {
+            int id = netMsg.conn.connectionId;
+
+            var tutorProxyId = proxyIdToRole.FirstOrDefault(x => "tutor".Equals(x.Value)).Key;
+
+            foreach (var connection in NetworkServer.connections)
+            {
+                if (connection != null && connection.connectionId == tutorProxyId)
+                {
+                    connection.Send(VoiceChatMsgType.StudentRequestTutor, new IntegerMessage(id));
+                }
+            }
+        }
+
         private static void OnProxyRequested(NetworkMessage netMsg)
         {
             string password = netMsg.ReadMessage<StringMessage>().value;
@@ -231,6 +350,13 @@ namespace VoiceChat.Networking {
             if (AuthPassword(password, id))
             {
                 print(proxyIdToRole[id]);
+
+                var proxy = Instantiate<GameObject>(proxyPrefab);
+                proxy.SendMessage("SetNetworkId", id);
+
+                proxies.Add(id, proxy);
+                NetworkServer.Spawn(proxy);
+
                 // We need to set the "localProxyId" static variable on the client
                 // before the "Start" method of the local proxy is called.
                 // On Local Clients, the Start method of a spowned obect is faster than
@@ -248,13 +374,43 @@ namespace VoiceChat.Networking {
                 else
                 {
                     netMsg.conn.Send(VoiceChatMsgType.SpawnProxy, new IntegerMessage(id));
+
+                    
+
+                    // tell tutors to add new connected user to list of connected users
+                    foreach (var entry in proxyIdToRole)
+                    {
+                        print(entry.Key);
+                        // make sure we are not sending our own id to ourselves
+                        if ("tutor".Equals(entry.Value) && entry.Key != id)
+                        {
+                            foreach (var connection in NetworkServer.connections)
+                            {
+                                if (connection != null && connection.connectionId == entry.Key)
+                                {
+                                    connection.Send(VoiceChatMsgType.AddUser, new IntegerMessage(id));
+                                }
+
+                            }
+                        }
+                    }
+
+                    // if it's a new tutor, add all of the existing connections to their list of connected users
+                    if ("tutor".Equals(proxyIdToRole[id]))
+                    {
+                        foreach (var proxyId in proxyIdToRole.Keys)
+                        {
+                            if (proxyId != id)
+                            {
+                                netMsg.conn.Send(VoiceChatMsgType.AddUser, new IntegerMessage(proxyId));
+                            }
+                            
+                        }
+                        
+                    }
                 }
 
-                var proxy = Instantiate<GameObject>(proxyPrefab);
-                proxy.SendMessage("SetNetworkId", id);
-
-                proxies.Add(id, proxy);
-                NetworkServer.Spawn(proxy);
+                
             }
         }
 
@@ -273,20 +429,38 @@ namespace VoiceChat.Networking {
         {
             var data = netMsg.ReadMessage<VoiceChatPacketMessage>();
 
-            foreach (var connection in NetworkServer.connections)
+            foreach (var entry in currentCallMap)
             {
-                if (connection == null || connection.connectionId == data.proxyId)
-                    continue;
+                if (data.proxyId == entry.Key || entry.Value.Contains(data.proxyId))
+                {
+                    foreach (var connection in NetworkServer.connections)
+                    {
 
-                connection.SendUnreliable(VoiceChatMsgType.Packet, data);
-            }
+                        if (connection == null || connection.connectionId == data.proxyId)
+                            continue;
 
-            foreach (var connection in NetworkServer.localConnections)
-            {
-                if (connection == null || connection.connectionId == data.proxyId)
-                    continue;
+                        if (connection.connectionId == entry.Key || entry.Value.Contains(connection.connectionId))
+                        {
+                            connection.SendUnreliable(VoiceChatMsgType.Packet, data);
+                        }
+                        
+                    }
 
-                connection.SendUnreliable(VoiceChatMsgType.Packet, data);
+
+                    foreach (var connection in NetworkServer.localConnections)
+                    {
+                        var connectionId = connection.connectionId;
+
+                        if (connection == null || connectionId == data.proxyId)
+                            continue;
+
+                        if (connectionId == entry.Key || entry.Value.Contains(connectionId))
+                        {
+                            connection.SendUnreliable(VoiceChatMsgType.Packet, data);
+                        }
+
+                    }
+                }
             }
 
         }
