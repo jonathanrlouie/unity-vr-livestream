@@ -9,6 +9,6 @@ namespace VoiceChat.Networking
         public const short RequestProxy = Base + 1;
         public const short SpawnProxy   = Base + 2;
         public const short Packet       = Base + 3;
-        public const short StudentRequestTutor = Base + 5;
+        public const short RequestTutor = Base + 4;
     }
 }

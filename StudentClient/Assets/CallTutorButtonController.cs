@@ -21,7 +21,7 @@ public class CallTutorButtonController : MonoBehaviour {
 
     public void OnClick()
     {
-        NetworkManager.singleton.client.Send(VoiceChatMsgType.StudentRequestTutor, new EmptyMessage());
+        NetworkManager.singleton.client.Send(VoiceChatMsgType.RequestTutor, new EmptyMessage());
     }
     
 }
