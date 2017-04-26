@@ -162,10 +162,10 @@ namespace VoiceChat.Networking
             NetworkServer.UnregisterHandler(VoiceChatMsgType.RequestProxy);
         }
 
-        public static void OnManagerClientConnect(NetworkConnection connection)
+        public static void OnManagerClientConnect(string password, NetworkConnection connection)
         {
             var client = NetworkManager.singleton.client;
-            client.Send(VoiceChatMsgType.RequestProxy, new StringMessage("student"));
+            client.Send(VoiceChatMsgType.RequestProxy, new StringMessage(password));
         }
         
         #endregion

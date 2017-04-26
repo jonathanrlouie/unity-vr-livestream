@@ -16,5 +16,6 @@ namespace VoiceChat.Networking
         public const short EndCall = Base + 8;
         public const short RemoveUser = Base + 9;
         public const short AddUser = Base + 10;
+        public const short PopulateUserList = Base + 11;
     }
 }

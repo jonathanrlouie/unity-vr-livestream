@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
+using UnityEngine.UI;
 
 namespace VoiceChat.Networking
 {
@@ -18,8 +19,9 @@ namespace VoiceChat.Networking
 
         public static GameObject callUserButtonPrefab;
         public static GameObject canvas;
-		private static List<int> helpNeededIds = new List<int>();
-		private static Dictionary<int, GameObject> connectedUsers = new Dictionary<int, GameObject>();
+        private static Dictionary<int, User> connectedUsers = new Dictionary<int, User>();
+        private static Dictionary<string, Vector2> userPosition = new Dictionary<string, Vector2>();
+        private static GameObject[,] userGrid;
 
         //public bool isMine { get { return networkId != 0 && networkId == localProxyId; } }
         public bool isMine { get { return networkId == localProxyId; } }
@@ -116,16 +118,23 @@ namespace VoiceChat.Networking
 
         private static void OnAddUserId(NetworkMessage netMsg)
         {
-            int newId = netMsg.ReadMessage<IntegerMessage>().value;
+            VoiceChatAddUserMessage addUserMessage = netMsg.ReadMessage<VoiceChatAddUserMessage>();
 
-            if (!connectedUsers.ContainsKey(newId) && newId != localProxyId)
+            int proxyId = addUserMessage.ProxyId;
+            User user = addUserMessage.User;
+
+            if (!connectedUsers.ContainsKey(proxyId) && proxyId != localProxyId)
             {
-                var button = Instantiate(callUserButtonPrefab, new Vector3(50*localProxyId + 50, 50, 0), Quaternion.identity);
-                button.transform.SetParent(canvas.transform);
-                button.GetComponent<CallUserButtonController>().userId = newId;
-                
+                connectedUsers.Add(proxyId, user);
 
-                connectedUsers.Add(newId, button);
+                Vector2 gridPos = userPosition[user.Username];
+
+                var button = Instantiate(callUserButtonPrefab, new Vector3(10 * gridPos.x, gridPos.y * 10, 0), Quaternion.identity);
+                button.transform.SetParent(canvas.transform);
+                button.GetComponent<CallUserButtonController>().userId = proxyId;
+                button.GetComponentInChildren<Text>().text = user.Username;
+
+                userGrid[(int)gridPos.x, (int)gridPos.y] = button;
             }
 
         }
@@ -133,8 +142,52 @@ namespace VoiceChat.Networking
         private static void OnRemoveUserId(NetworkMessage netMsg)
         {
             int removeId = netMsg.ReadMessage<IntegerMessage>().value;
-            Destroy(connectedUsers[removeId]);
+            var user = connectedUsers[removeId];
+            if (user != null)
+            {
+                Vector2 pos = userPosition[user.Username];
+                Destroy(userGrid[(int) pos.x, (int) pos.y]);
+            }
             connectedUsers.Remove(removeId);
+
+            
+        }
+
+        private static void OnPopulateUserList(NetworkMessage netMsg)
+        {
+            VoiceChatUserListMessage userListMessage = netMsg.ReadMessage<VoiceChatUserListMessage>();
+
+            int extraRow = 0;
+            if (userListMessage.Users.Count % 4 > 0)
+            {
+                extraRow = 1;
+            }
+            int numRows = userListMessage.Users.Count / 4 + extraRow;
+
+            userGrid = new GameObject[4, numRows];
+
+            for (int i = 0; i < userListMessage.Users.Count; i++)
+            {
+                userPosition.Add(userListMessage.Users[i].Username, new Vector2(i % 4, i / 4));
+            }
+
+            foreach (var onlineUser in userListMessage.OnlineUsers)
+            {
+                if (localProxyId != onlineUser.ProxyId)
+                {
+                    connectedUsers.Add(onlineUser.ProxyId, onlineUser.User);
+
+
+                    Vector2 gridPos = userPosition[onlineUser.User.Username];
+
+                    var button = Instantiate(callUserButtonPrefab, new Vector3(10 * gridPos.x, gridPos.y * 10, 0), Quaternion.identity);
+                    button.transform.SetParent(canvas.transform);
+                    button.GetComponent<CallUserButtonController>().userId = onlineUser.ProxyId;
+                    button.GetComponentInChildren<Text>().text = onlineUser.User.Username;
+
+                    userGrid[(int)gridPos.x, (int)gridPos.y] = button;
+                }
+            }
             
         }
 
@@ -145,6 +198,7 @@ namespace VoiceChat.Networking
 			client.RegisterHandler(VoiceChatMsgType.StudentRequestTutor, OnStudentRequestTutor);
             client.RegisterHandler(VoiceChatMsgType.AddUser, OnAddUserId);
             client.RegisterHandler(VoiceChatMsgType.RemoveUser, OnRemoveUserId);
+            client.RegisterHandler(VoiceChatMsgType.PopulateUserList, OnPopulateUserList);
 
 
             if (customPrefab == null)
@@ -164,10 +218,13 @@ namespace VoiceChat.Networking
             var client = NetworkManager.singleton.client;
             if (client == null) return;
 
-            
-            foreach (var entry in connectedUsers)
+
+            if (userGrid != null)
             {
-                Destroy(entry.Value);
+                foreach (var button in userGrid)
+                {
+                    Destroy(button);
+                }
             }
             
 
@@ -176,6 +233,7 @@ namespace VoiceChat.Networking
 			client.UnregisterHandler(VoiceChatMsgType.StudentRequestTutor);
             client.UnregisterHandler(VoiceChatMsgType.AddUser);
             client.UnregisterHandler(VoiceChatMsgType.RemoveUser);
+            client.UnregisterHandler(VoiceChatMsgType.PopulateUserList);
         }
 
         public static void OnManagerServerDisconnect(NetworkConnection conn)
@@ -206,10 +264,10 @@ namespace VoiceChat.Networking
             NetworkServer.UnregisterHandler(VoiceChatMsgType.RequestProxy);
         }
 
-        public static void OnManagerClientConnect(NetworkConnection connection)
+        public static void OnManagerClientConnect(string password, NetworkConnection connection)
         {
             var client = NetworkManager.singleton.client;
-            client.Send(VoiceChatMsgType.RequestProxy, new StringMessage("matt"));
+            client.Send(VoiceChatMsgType.RequestProxy, new StringMessage(password));
         }
         
         #endregion
@@ -219,10 +277,11 @@ namespace VoiceChat.Networking
 		private static void OnStudentRequestTutor(NetworkMessage netMsg)
 		{
 			var studentProxyId = netMsg.ReadMessage<IntegerMessage>().value;
-			
-			if (!helpNeededIds.Contains(studentProxyId)) {
-				helpNeededIds.Add(studentProxyId);
-			}
+            
+            var user = connectedUsers[studentProxyId];
+            Vector2 buttonPos = userPosition[user.Username];
+            userGrid[(int)buttonPos.x, (int)buttonPos.y].GetComponent<Image>().color = Color.red;
+            
 		}
 
         private static void OnProxyRequested(NetworkMessage netMsg)

@@ -106,9 +106,12 @@
     <Compile Include="Assets\VoiceChat\Scripts\Networking\Legacy\VoiceChatExtensions.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\Networking\Legacy\VoiceChatNetworkProxy.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\Networking\Legacy\VoiceChatNetworkUtils.cs" />
+    <Compile Include="Assets\VoiceChat\Scripts\Networking\User.cs" />
+    <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatAddUserMessage.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatMsgType.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatNetworkProxy.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatPacketMessage.cs" />
+    <Compile Include="Assets\VoiceChat\Scripts\Networking\VoiceChatUserListMessage.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatCircularBuffer.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatCompression.cs" />
     <Compile Include="Assets\VoiceChat\Scripts\VoiceChatPacket.cs" />

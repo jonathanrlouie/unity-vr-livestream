@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 using VoiceChat.Networking;
+using UnityEngine.UI;
 
 namespace VoiceChat.Demo.HLAPI
 {
@@ -11,7 +12,7 @@ namespace VoiceChat.Demo.HLAPI
     public class VoiceChatNetworkManager : NetworkManager
     {
         public FSM fsm;
-
+        public InputField passwordField;
         void Start(){
 			
 		}
@@ -54,7 +55,7 @@ namespace VoiceChat.Demo.HLAPI
         public override void OnClientConnect(NetworkConnection connection)
         {
             base.OnClientConnect(connection);
-            VoiceChatNetworkProxy.OnManagerClientConnect(connection);
+            VoiceChatNetworkProxy.OnManagerClientConnect(passwordField.text, connection);
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 using VoiceChat.Networking;
+using UnityEngine.UI;
 
 namespace VoiceChat.Demo.HLAPI
 {
@@ -13,6 +14,7 @@ namespace VoiceChat.Demo.HLAPI
         public FSM fsm;
         public GameObject callUserButtonPrefab;
         public GameObject canvas;
+        public InputField passwordField;
 
         void Start(){
             // TODO: is there a better way than setting a static variable?
@@ -59,7 +61,7 @@ namespace VoiceChat.Demo.HLAPI
         public override void OnClientConnect(NetworkConnection connection)
         {
             base.OnClientConnect(connection);
-            VoiceChatNetworkProxy.OnManagerClientConnect(connection);
+            VoiceChatNetworkProxy.OnManagerClientConnect(passwordField.text, connection);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace VoiceChat.Networking {
+
     public class VoiceChatNetworkProxy : NetworkBehaviour{
         public delegate void MessageHandler<T>(T data);
         public static event MessageHandler<VoiceChatPacketMessage> VoiceChatPacketReceived;
@@ -26,9 +27,12 @@ namespace VoiceChat.Networking {
 		private static Dictionary<string, string> accounts = new Dictionary<string, string>() {
             { "matt", "tutor" },
             { "sally", "tutor" },
-            { "jonathan1337", "tutor" }
+            { "jonathan1337", "tutor" },
+            { "bob", "student" },
+            { "rob", "student" },
+            { "nob", "student" }
         };
-		private static Dictionary<int, string> proxyIdToRole = new Dictionary<int, string>();
+		private static Dictionary<int, User> proxyIdToUser = new Dictionary<int, User>();
 
         // maps tutor ids to a list of all student ids that they are currently speaking with
         private static Dictionary<int, List<int>> currentCallMap = new Dictionary<int, List<int>>();
@@ -162,9 +166,9 @@ namespace VoiceChat.Networking {
 
             proxies.Remove(id);
 
-            if (proxyIdToRole.ContainsKey(id))
+            if (proxyIdToUser.ContainsKey(id))
             {
-                proxyIdToRole.Remove(id);
+                proxyIdToUser.Remove(id);
             }
             else
             {
@@ -185,9 +189,9 @@ namespace VoiceChat.Networking {
             }
 
             // tell tutors to remove disconnected user from list of connected users
-            foreach (var entry in proxyIdToRole)
+            foreach (var entry in proxyIdToUser)
             {
-                if ("tutor".Equals(entry.Value))
+                if ("tutor".Equals(entry.Value.Role))
                 {
                     foreach (var connection in NetworkServer.connections)
                     {
@@ -238,28 +242,23 @@ namespace VoiceChat.Networking {
         private static bool AuthPassword(string password, int proxyId)
         {
             // TODO: this is horribly insecure! Make sure that passwords are at least hashed first.
-            string role = LookupRole(password);
-            AssignProxyToRole(proxyId, role);
-
-            // TODO: use a real authentication workflow that returns false if the client isn't registered in the database
-            return true;
-        }
-
-        // get client password and get the role
-        public static string LookupRole(string password)
-        {
-            string clientRole = "student";
             if (accounts.ContainsKey(password))
             {
-                clientRole = accounts[password];
+                var role = accounts[password];
+                AssignProxyToRole(proxyId, role, password);
+                return true;
             }
-            return clientRole;
+            else
+            {
+                return false;
+            }
         }
 
         // have password and role, and assign ip to role
-        public static void AssignProxyToRole(int proxyId, string role)
+        public static void AssignProxyToRole(int proxyId, string role, string password)
         {
-            proxyIdToRole.Add(proxyId, role);
+            // TODO: Don't use the password as a username; get the real username from the DB
+            proxyIdToUser.Add(proxyId, new User(password, role));
         }
 
         #region Network Message Handlers
@@ -267,7 +266,7 @@ namespace VoiceChat.Networking {
         private static void OnStudentRequested(NetworkMessage netMsg)
         {
             // TODO: check that proxyIdToRole has the id
-            if ("tutor".Equals(proxyIdToRole[netMsg.conn.connectionId]))
+            if ("tutor".Equals(proxyIdToUser[netMsg.conn.connectionId].Role))
             {
                 var studentProxyId = netMsg.ReadMessage<IntegerMessage>().value;
 
@@ -290,7 +289,7 @@ namespace VoiceChat.Networking {
         private static void OnStudentDropRequested(NetworkMessage netMsg)
         {
             // TODO: check that proxyIdToRole has the id
-            if ("tutor".Equals(proxyIdToRole[netMsg.conn.connectionId]))
+            if ("tutor".Equals(proxyIdToUser[netMsg.conn.connectionId].Role))
             {
                 var studentProxyId = netMsg.ReadMessage<IntegerMessage>().value;
                 
@@ -325,7 +324,7 @@ namespace VoiceChat.Networking {
         {
             int id = netMsg.conn.connectionId;
 
-            var tutorProxyId = proxyIdToRole.FirstOrDefault(x => "tutor".Equals(x.Value)).Key;
+            var tutorProxyId = proxyIdToUser.FirstOrDefault(x => "tutor".Equals(x.Value.Role)).Key;
 
             foreach (var connection in NetworkServer.connections)
             {
@@ -349,7 +348,6 @@ namespace VoiceChat.Networking {
 
             if (AuthPassword(password, id))
             {
-                print(proxyIdToRole[id]);
 
                 var proxy = Instantiate<GameObject>(proxyPrefab);
                 proxy.SendMessage("SetNetworkId", id);
@@ -378,17 +376,16 @@ namespace VoiceChat.Networking {
                     
 
                     // tell tutors to add new connected user to list of connected users
-                    foreach (var entry in proxyIdToRole)
+                    foreach (var entry in proxyIdToUser)
                     {
-                        print(entry.Key);
                         // make sure we are not sending our own id to ourselves
-                        if ("tutor".Equals(entry.Value) && entry.Key != id)
+                        if ("tutor".Equals(entry.Value.Role) && entry.Key != id)
                         {
                             foreach (var connection in NetworkServer.connections)
                             {
                                 if (connection != null && connection.connectionId == entry.Key)
                                 {
-                                    connection.Send(VoiceChatMsgType.AddUser, new IntegerMessage(id));
+                                    connection.Send(VoiceChatMsgType.AddUser, new VoiceChatAddUserMessage((short) id, proxyIdToUser[id]));
                                 }
 
                             }
@@ -396,17 +393,29 @@ namespace VoiceChat.Networking {
                     }
 
                     // if it's a new tutor, add all of the existing connections to their list of connected users
-                    if ("tutor".Equals(proxyIdToRole[id]))
+                    if ("tutor".Equals(proxyIdToUser[id].Role))
                     {
-                        foreach (var proxyId in proxyIdToRole.Keys)
+                        // query the database for all registered users and their roles
+                        // TODO: update this code after the real DB is used; the accounts dictionary shouldn't exist anymore
+                        List<User> userList = new List<User>();
+
+                        foreach (var entry in accounts)
                         {
-                            if (proxyId != id)
-                            {
-                                netMsg.conn.Send(VoiceChatMsgType.AddUser, new IntegerMessage(proxyId));
-                            }
+                            userList.Add(new User(entry.Key, entry.Value));
+                        }
+
+                        List<ProxyIdUser> onlineUsers = new List<ProxyIdUser>();
+
+                        foreach (var proxyId in proxyIdToUser.Keys)
+                        {
+                            
+                            onlineUsers.Add(new ProxyIdUser(proxyId, proxyIdToUser[proxyId]));
+                            
                             
                         }
-                        
+
+                        netMsg.conn.Send(VoiceChatMsgType.PopulateUserList, new VoiceChatUserListMessage(userList, onlineUsers));
+
                     }
                 }
 
