@@ -27,6 +27,7 @@ public class CallUserButtonController : MonoBehaviour {
         }
         else
         {
+            Debug.Log(userId);
             NetworkManager.singleton.client.Send(VoiceChatMsgType.RequestStudent, new IntegerMessage(userId));
             GetComponent<Image>().color = Color.white;
         }

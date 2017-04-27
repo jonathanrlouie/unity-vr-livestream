@@ -129,7 +129,7 @@ namespace VoiceChat.Networking
 
                 Vector2 gridPos = userPosition[user.Username];
 
-                var button = Instantiate(callUserButtonPrefab, new Vector3(10 * gridPos.x, gridPos.y * 10, 0), Quaternion.identity);
+                var button = Instantiate(callUserButtonPrefab, new Vector3(50 * gridPos.x + 50, 50 * gridPos.y + 50, 0), Quaternion.identity);
                 button.transform.SetParent(canvas.transform);
                 button.GetComponent<CallUserButtonController>().userId = proxyId;
                 button.GetComponentInChildren<Text>().text = user.Username;
@@ -180,7 +180,7 @@ namespace VoiceChat.Networking
 
                     Vector2 gridPos = userPosition[onlineUser.User.Username];
 
-                    var button = Instantiate(callUserButtonPrefab, new Vector3(10 * gridPos.x, gridPos.y * 10, 0), Quaternion.identity);
+                    var button = Instantiate(callUserButtonPrefab, new Vector3(50 * gridPos.x + 50, 50 * gridPos.y + 50, 0), Quaternion.identity);
                     button.transform.SetParent(canvas.transform);
                     button.GetComponent<CallUserButtonController>().userId = onlineUser.ProxyId;
                     button.GetComponentInChildren<Text>().text = onlineUser.User.Username;
